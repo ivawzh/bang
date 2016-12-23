@@ -1,12 +1,12 @@
 import { createStore, applyMiddleware, compose } from 'redux'
 import thunk from 'redux-thunk'
 import createReducer from './reducers/index'
+import { routerMiddleware } from 'react-router-redux'
 
 export default function createCustomStore(initialState = {}, history) {
-  // Create the store with two middlewares
-  // 1. thunkMiddleware: Makes redux-thunk work
   const middlewares = [
-    thunk
+    thunk,
+    routerMiddleware(history)
   ]
 
   const enhancers = [
@@ -27,23 +27,6 @@ export default function createCustomStore(initialState = {}, history) {
     initialState,
     composeEnhancers(...enhancers)
   )
-
-  // Extensions
-  // Async reducer registry
-  store.asyncReducers = {}
-
-  // Make reducers hot reloadable, see http://mxs.is/googmo
-  /* istanbul ignore next */
-  if (module.hot) {
-    module.hot.accept('./reducers', () => {
-      System.import('./reducers').then((reducerModule) => {
-        const createReducers = reducerModule.default
-        const nextReducers = createReducers(store.asyncReducers)
-
-        store.replaceReducer(nextReducers)
-      })
-    })
-  }
 
   return store
 }

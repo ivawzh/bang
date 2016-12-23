@@ -1,16 +1,21 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 import './index.css'
-import createStore from './redux-store'
+import configureStore from './redux-store'
 import { Provider } from 'react-redux'
-import Home from './components/app/App'
+import routes from './routes'
+import { Router, browserHistory } from 'react-router'
+import { syncHistoryWithStore } from 'react-router-redux'
 
 const initialState = window.__INITIAL_STATE__
-const store = createStore(initialState)
+const store = configureStore(initialState, browserHistory)
+const history = syncHistoryWithStore(browserHistory, store)
 
 ReactDOM.render(
   <Provider store={store}>
-    <Home />
+    <Router history={history}>
+      {routes}
+    </Router>
   </Provider>,
   document.getElementById('root')
 )
