@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import logo from './../../logo.svg'
 import './index.css'
-import db from '../../stores/firebase'
+import db, { googleAuth } from '../../stores/firebase'
 
 class App extends Component {
   constructor(props) {
@@ -35,12 +35,20 @@ class App extends Component {
     console.log('Finished load')
   }
 
+  handleGoogleLogin = async () => {
+    console.log('start google login')
+    const { userInfo } = await googleAuth()
+    console.log('Fetched current user:')
+    console.log(userInfo)
+    // this.props.dispatch(('fecthed_current_user', { userInfo }))
+  }
+
   render() {
     return (
       <div className="App">
         <div className="App-header">
           <img src={logo} className="App-logo" alt="logo" />
-          <h2>Welcome to React, React Router, Redux and Firebase</h2>
+          <h2>Welcome to React, React Router, Redux, Firebase and Firebase Auth</h2>
         </div>
         <p className="App-intro">
           To get started, edit <code>src/components/app/index.js</code> and save to reload.
@@ -57,6 +65,9 @@ class App extends Component {
               (comment, index) => <li key={ `comment-${index}` }>{comment}</li>
             )}
           </ul>
+        </div>
+        <div>
+          <button onClick={this.handleGoogleLogin}>Google Login</button>
         </div>
       </div>
     )

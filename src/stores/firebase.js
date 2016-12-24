@@ -12,14 +12,28 @@ const store = initStore()
 
 export default store
 
-function initStore(): firebase.database.Reference {
-  let app: firebase.app.App
+export async function googleAuth() {
+  const app:firebase.app.App = initApp()
+  const provider: firebase.auth.GoogleAuthProvider = new firebase.auth.GoogleAuthProvider()
+  const result = await app.auth().signInWithPopup(provider)
+  const googleAccessToken = result.credential.accessToken
+  const userInfo = result.user
+  return { googleAccessToken, userInfo }
+}
+
+function initApp():firebase.app.App {
+  let app
   try {
     app = firebase.app(appName)
   } catch (appNotExistError) {
     app = firebase.initializeApp(config.secret, appName)
   }
-    const database: firebase.database.Database = app.database()
+  return app
+}
+
+function initStore(): firebase.database.Reference {
+  const app:firebase.app.App = initApp()
+  const database: firebase.database.Database = app.database()
   const store: firebase.database.Reference = database.ref(config.rootRef)
   return store
 }
