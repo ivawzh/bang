@@ -8,6 +8,7 @@ class App extends Component {
     currentUser: PropTypes.shape({
       status: PropTypes.shape({
         isLoaded: PropTypes.bool,
+        isObserved: PropTypes.bool,
         error: PropTypes.shape({
           message: PropTypes.string
         })
@@ -18,7 +19,8 @@ class App extends Component {
         uid: PropTypes.string
       })
     }),
-    dispatchLoginStart: PropTypes.func
+    dispatchLoginStart: PropTypes.func,
+    dispatchObserveCurrentUserStart: PropTypes.func
   }
 
   constructor(props) {
@@ -55,6 +57,12 @@ class App extends Component {
   handleGoogleLogin = () => {
     if (this.props.currentUser.status.isLoading === false) {
       this.props.dispatchLoginStart()
+    }
+  }
+
+  componentDidMount = () => {
+    if (this.props.currentUser.status.isObserved === false) {
+      this.props.dispatchObserveCurrentUserStart()
     }
   }
 

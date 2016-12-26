@@ -1,5 +1,5 @@
 import { connect } from 'react-redux'
-import { loginStart } from '../../actions/current-user'
+import { loginStart, observeCurrentUserStart } from '../../actions/current-user'
 import App from './index'
 
 function mapStateToProps(storeStates, ownProps) {
@@ -10,7 +10,8 @@ function mapStateToProps(storeStates, ownProps) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    dispatchLoginStart: () => { dispatch(loginStart()) }
+    dispatchLoginStart: () => { dispatch(loginStart()) },
+    dispatchObserveCurrentUserStart: () => { dispatch(observeCurrentUserStart()) }
   }
 }
 

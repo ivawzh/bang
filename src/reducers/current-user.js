@@ -4,6 +4,7 @@ const initialState = {
   status: {
     isLoaded: false,
     isLoading: false,
+    isObserved: false,
     error: null
   },
   data: {
@@ -14,6 +15,12 @@ const initialState = {
 }
 
 const actionHandlers = {
+  OBSERVE_CURRENT_USER_START: (state) => {
+    return merge(
+      state,
+      { status: { isObserved: true } }
+    )
+  },
   LOGIN_START: (state) => {
     return merge(
       state,
@@ -43,6 +50,9 @@ const actionHandlers = {
         data: initialState.data
       }
     )
+  },
+  LOG_OUT_SUCESS: (state) => {
+    return initialState
   },
   default: state => state
 }

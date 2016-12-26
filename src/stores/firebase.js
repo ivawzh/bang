@@ -12,7 +12,13 @@ const store = initStore()
 
 export default store
 
-export async function googleAuth() {
+export function currentUser() : ?firebase.User {
+  const app: firebase.app.App = initApp()
+  const auth: firebase.auth.Auth = app.auth()
+  return auth.currentUser
+}
+
+export async function googleAuth() : { googleAccessToken: string, userInfo: object } {
   const app:firebase.app.App = initApp()
   const provider: firebase.auth.GoogleAuthProvider = new firebase.auth.GoogleAuthProvider()
   const result = await app.auth().signInWithPopup(provider)
@@ -38,7 +44,21 @@ function initStore(): firebase.database.Reference {
   return store
 }
 
-export async function checkConnection(client):boolean {
-  const isConnectedSnap = await client.root.child('.info/connected').once('value')
+export async function checkConnection():boolean {
+  const isConnectedSnap = await store.root.child('.info/connected').once('value')
   return isConnectedSnap.val()
+}
+
+export function listenAuth(loggedInHandler: (userInfo: object) => void, notLoggedInHandler: () => void) {
+  const app:firebase.app.App = initApp()
+  const auth: firebase.auth.Auth = app.auth()
+  auth.onAuthStateChanged((userInfo) => {
+    if (userInfo) {
+      // current user is logged in
+      loggedInHandler(userInfo)
+    } else {
+      // current user is not logged in
+      notLoggedInHandler()
+    }
+  })
 }
