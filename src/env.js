@@ -1,6 +1,6 @@
 import deepMerge from 'deepmerge'
 
-const dbUser = process.env.DB_USER || 'default-user'
+const dbUser = process.env.REACT_APP_DB_USER || 'default-user'
 const nodeEnv = process.env.NODE_ENV || 'development'
 
 const commonEnv = {
@@ -39,11 +39,11 @@ const devEnv = {
 const prodEnv = {
   firebase: {
     secret: {
-      apiKey: process.env.FIREBASE_API_KEY,
-      authDomain: process.env.FIREBASE_AUTH_DOMAIN,
-      databaseURL:  process.env.DATABASE_URL,
-      storageBucket:  process.env.STORAGE_BUCKET,
-      messagingSenderId:  process.env.MESSAGING_SENDER_ID
+      apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
+      authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
+      databaseURL:  process.env.REACT_APP_DATABASE_URL,
+      storageBucket:  process.env.REACT_APP_STORAGE_BUCKET,
+      messagingSenderId:  process.env.REACT_APP_MESSAGING_SENDER_ID
     },
     rootRef: '',
     enableLogging: false
