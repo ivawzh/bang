@@ -1,6 +1,6 @@
 import React from 'react'
 import { Route } from 'react-router'
-import Home from './components/app'
+import Home from './components/app/container'
 
 const routes = (
   <Route path="/" component={Home}>

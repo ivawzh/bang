@@ -1,9 +1,26 @@
-import React, { Component } from 'react'
+import React, { Component, PropTypes } from 'react'
 import logo from './../../logo.svg'
 import './index.css'
-import db, { googleAuth } from '../../stores/firebase'
+import db from '../../stores/firebase'
 
 class App extends Component {
+  static propTypes = {
+    currentUser: PropTypes.shape({
+      status: PropTypes.shape({
+        isLoaded: PropTypes.bool,
+        error: PropTypes.shape({
+          message: PropTypes.string
+        })
+      }),
+      data: PropTypes.shape({
+        name: PropTypes.string,
+        email: PropTypes.string,
+        uid: PropTypes.string
+      })
+    }),
+    dispatchLoginStart: PropTypes.func
+  }
+
   constructor(props) {
     super(props)
     this.state = {
@@ -35,15 +52,14 @@ class App extends Component {
     console.log('Finished load')
   }
 
-  handleGoogleLogin = async () => {
-    console.log('start google login')
-    const { userInfo } = await googleAuth()
-    console.log('Fetched current user:')
-    console.log(userInfo)
-    // this.props.dispatch(('fecthed_current_user', { userInfo }))
+  handleGoogleLogin = () => {
+    if (this.props.currentUser.status.isLoading === false) {
+      this.props.dispatchLoginStart()
+    }
   }
 
   render() {
+    const currentUser = this.props.currentUser
     return (
       <div className="App">
         <div className="App-header">
@@ -53,6 +69,12 @@ class App extends Component {
         <p className="App-intro">
           To get started, edit <code>src/components/app/index.js</code> and save to reload.
         </p>
+        <div>
+          { (currentUser.status.isLoaded) ? <h3> You are logged in as {currentUser.data.name}</h3> : <h3> You are not logged in yet.</h3> }
+          { (currentUser.status.error !== null) ? <p> Too bad. Failed to login due to error: {currentUser.status.error.message} </p> : null}
+          <button onClick={this.handleGoogleLogin}>Google Login</button>
+        </div>
+        <br />
         <div>
           <input value={this.newComment} onChange={this.handleChangeComment} placeholder="Write new comment..."></input>
           <button onClick={this.handleComment}>Comment</button>
@@ -66,9 +88,7 @@ class App extends Component {
             )}
           </ul>
         </div>
-        <div>
-          <button onClick={this.handleGoogleLogin}>Google Login</button>
-        </div>
+        <br />
       </div>
     )
   }
