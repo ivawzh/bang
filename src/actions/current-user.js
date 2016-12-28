@@ -8,7 +8,7 @@ export function loginFail(error): object {
   return { type: 'LOGIN_FAILURE', error }
 }
 
-export function loginStart(): Promise {
+export function loginStart(): (dispatch: func) => Promise<void> {
   return async (dispatch): void => {
     dispatch({ type: 'LOGIN_START' })
     try {
@@ -24,7 +24,7 @@ export function logOutSucess(): object {
   return { type: 'LOG_OUT_SUCESS' }
 }
 
-export function observeCurrentUserStart(): Promise {
+export function observeCurrentUserStart(): (dispatch: func) => Promise<void> {
   return async (dispatch): void => {
     dispatch({ type: 'OBSERVE_CURRENT_USER_START' })
 

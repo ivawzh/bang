@@ -1,16 +1,18 @@
 import merge from 'deepmerge'
 
 const initialState = {
-  status: {
-    isLoaded: false,
-    isLoading: false,
-    isObserved: false,
-    error: null
-  },
-  data: {
-    name: null,
-    uid: null,
-    email: null
+  auth: {
+    status: {
+      isLoaded: false,
+      isLoading: false,
+      isObserved: false,
+      error: null
+    },
+    data: {
+      name: null,
+      uid: null,
+      email: null
+    }
   }
 }
 
@@ -18,14 +20,16 @@ const actionHandlers = {
   OBSERVE_CURRENT_USER_START: (state) => {
     return merge(
       state,
-      { status: { isObserved: true } }
+      { auth: { status: { isObserved: true } } }
     )
   },
   LOGIN_START: (state) => {
     return merge(
       state,
       {
-        status: { isLoading: true }
+        auth: {
+          status: { isLoading: true }
+        }
       }
     )
   },
@@ -33,11 +37,13 @@ const actionHandlers = {
     return merge(
       state,
       {
-        status: { isLoaded: true, isLoading: false, error: null },
-        data: {
-          name: action.userInfo.displayName,
-          email: action.userInfo.email,
-          uid: action.userInfo.uid
+        auth: {
+          status: { isLoaded: true, isLoading: false, error: null },
+          data: {
+            name: action.userInfo.displayName,
+            email: action.userInfo.email,
+            uid: action.userInfo.uid
+          }
         }
       }
     )
@@ -46,8 +52,10 @@ const actionHandlers = {
     return merge(
       state,
       {
-        status: { isLoaded: false, isLoading: false, error: action.error },
-        data: initialState.data
+        auth: {
+          status: { isLoaded: false, isLoading: false, error: action.error },
+          data: initialState.auth.data
+        }
       }
     )
   },

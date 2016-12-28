@@ -49,7 +49,7 @@ export async function checkConnection():boolean {
   return isConnectedSnap.val()
 }
 
-export function listenAuth(loggedInHandler: (userInfo: object) => void, notLoggedInHandler: () => void) {
+export function listenAuth(loggedInHandler: (userInfo: object) => void, notLoggedInHandler: func) {
   const app:firebase.app.App = initApp()
   const auth: firebase.auth.Auth = app.auth()
   auth.onAuthStateChanged((userInfo) => {

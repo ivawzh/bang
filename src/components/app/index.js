@@ -20,7 +20,8 @@ class App extends Component {
       })
     }),
     dispatchLoginStart: PropTypes.func,
-    dispatchObserveCurrentUserStart: PropTypes.func
+    dispatchObserveCurrentUserStart: PropTypes.func,
+    dispatchCreateGameStart: PropTypes.func
   }
 
   constructor(props) {
@@ -60,6 +61,12 @@ class App extends Component {
     }
   }
 
+  handleCreateGame = () => {
+    if (this.props.currentUser.status.isLoaded) {
+      this.props.dispatchCreateGameStart(this.props.currentUser.data)
+    }
+  }
+
   componentDidMount = () => {
     if (this.props.currentUser.status.isObserved === false) {
       this.props.dispatchObserveCurrentUserStart()
@@ -81,6 +88,10 @@ class App extends Component {
           { (currentUser.status.isLoaded) ? <h3> You are logged in as {currentUser.data.name}</h3> : <h3> You are not logged in yet.</h3> }
           { (currentUser.status.error !== null) ? <p> Too bad. Failed to login due to error: {currentUser.status.error.message} </p> : null}
           <button onClick={this.handleGoogleLogin}>Google Login</button>
+        </div>
+        <br />
+        <div>
+          <button onClick={this.handleCreateGame}>Create new game</button>
         </div>
         <br />
         <div>
