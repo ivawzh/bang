@@ -18,13 +18,13 @@ export function currentUser() : ?firebase.User {
   return auth.currentUser
 }
 
-export async function googleAuth() : { googleAccessToken: string, userInfo: object } {
+export async function googleAuth() : { googleAccessToken: string, authData: object } {
   const app:firebase.app.App = initApp()
   const provider: firebase.auth.GoogleAuthProvider = new firebase.auth.GoogleAuthProvider()
   const result = await app.auth().signInWithPopup(provider)
   const googleAccessToken = result.credential.accessToken
-  const userInfo = result.user
-  return { googleAccessToken, userInfo }
+  const authData = result.user
+  return { googleAccessToken, authData }
 }
 
 function initApp():firebase.app.App {
@@ -49,16 +49,20 @@ export async function checkConnection():boolean {
   return isConnectedSnap.val()
 }
 
-export function listenAuth(loggedInHandler: (userInfo: object) => void, notLoggedInHandler: func) {
+export function observeAuth(loggedInHandler: (authData: object) => void, notLoggedInHandler: func) {
   const app:firebase.app.App = initApp()
   const auth: firebase.auth.Auth = app.auth()
-  auth.onAuthStateChanged((userInfo) => {
-    if (userInfo) {
-      // current user is logged in
-      loggedInHandler(userInfo)
+  auth.onAuthStateChanged((authData) => {
+    if (authData) {
+      loggedInHandler(authData)
     } else {
-      // current user is not logged in
       notLoggedInHandler()
     }
   })
+}
+
+export async function signOut(): Promise<void> {
+  const app:firebase.app.App = initApp()
+  const auth: firebase.auth.Auth = app.auth()
+  await auth.signOut()
 }
