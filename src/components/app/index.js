@@ -7,20 +7,25 @@ class App extends Component {
   static propTypes = {
     currentUser: PropTypes.shape({
       status: PropTypes.shape({
-        isAuthenticated: PropTypes.bool,
-        isObserved: PropTypes.bool,
+        isLoggingIn: PropTypes.bool,
+        isLoggedIn: PropTypes.bool,
         error: PropTypes.shape({
           message: PropTypes.string
         })
       }),
-      data: PropTypes.shape({
+      authentication: PropTypes.shape({
+        status: PropTypes.shape({
+          beingObserved: PropTypes.bool
+        })
+      }),
+      user: PropTypes.shape({
         name: PropTypes.string,
-        email: PropTypes.string,
-        uid: PropTypes.string
+        id: PropTypes.string
       })
     }),
-    dispatchAuthenticateStart: PropTypes.func,
-    dispatchObserveCurrentUserStart: PropTypes.func,
+    dispatchGoogleLoginStart: PropTypes.func,
+    dispatchLogoutStart: PropTypes.func,
+    dispatchObserveAuthenticationStart: PropTypes.func,
     dispatchCreateGameStart: PropTypes.func
   }
 
@@ -56,20 +61,26 @@ class App extends Component {
   }
 
   handleGoogleLogin = () => {
-    if (this.props.currentUser.status.isLoading === false) {
-      this.props.dispatchAuthenticateStart()
+    if (this.props.currentUser.status.isLoggingIn === false) {
+      this.props.dispatchGoogleLoginStart(this.props.currentUser.authentication.status.beingObserved)
     }
   }
 
   handleCreateGame = () => {
-    if (this.props.currentUser.status.isAuthenticated) {
-      this.props.dispatchCreateGameStart(this.props.currentUser.data)
+    if (this.props.currentUser.authentication.status.isAuthenticated) {
+      this.props.dispatchCreateGameStart(this.props.currentUser.authentication.data)
+    }
+  }
+
+  handleLogout = () => {
+    if (this.props.currentUser.status.isLoggedIn) {
+      this.props.dispatchLogoutStart(this.props.currentUser.user.data.id)
     }
   }
 
   componentDidMount = () => {
-    if (this.props.currentUser.status.isObserved === false) {
-      this.props.dispatchObserveCurrentUserStart()
+    if (this.props.currentUser.authentication.status.beingObserved === false) {
+      this.props.dispatchObserveAuthenticationStart()
     }
   }
 
@@ -85,9 +96,10 @@ class App extends Component {
           To get started, edit <code>src/components/app/index.js</code> and save to reload.
         </p>
         <div>
-          { (currentUser.status.isAuthenticated) ? <h3> You are logged in as {currentUser.data.name}</h3> : <h3> You are not logged in yet.</h3> }
+          { (currentUser.status.isLoggedIn) ? <h3> You are logged in as {currentUser.user.data.name}</h3> : <h3> You are not logged in yet.</h3> }
           { (currentUser.status.error !== null) ? <p> Too bad. Failed to login due to error: {currentUser.status.error.message} </p> : null}
           <button onClick={this.handleGoogleLogin}>Google Login</button>
+          <button onClick={this.handleLogout}>Log Out</button>
         </div>
         <br />
         <div>
@@ -99,7 +111,7 @@ class App extends Component {
           <button onClick={this.handleComment}>Comment</button>
         </div>
         <div>
-          <button onClick={this.handleLoad}>Load Firebase data</button>
+          <button onClick={this.handleLoad}>Load Comments</button>
           <h3>Comments:</h3>
           <ul>
             { this.state.comments.map(
