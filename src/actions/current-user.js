@@ -1,36 +1,36 @@
 import { googleAuth, listenAuth } from '../stores/firebase'
 
-export function loginSuccess(userInfo): object {
-  return { type: 'LOGIN_SUCCESS', userInfo }
+export function authenticateSuccess(userInfo): object {
+  return { type: 'AUTHENTICATE_SUCCESS', userInfo }
 }
 
-export function loginFail(error): object {
-  return { type: 'LOGIN_FAILURE', error }
+export function authenticateFail(error): object {
+  return { type: 'AUTHENTICATE_FAILURE', error }
 }
 
-export function loginStart(): (dispatch: func) => Promise<void> {
+export function authenticateStart(): (dispatch: func) => Promise<void> {
   return async (dispatch): void => {
-    dispatch({ type: 'LOGIN_START' })
+    dispatch({ type: 'AUTHENTICATE_START' })
     try {
       const { userInfo } = await googleAuth()
-      dispatch(loginSuccess(userInfo))
+      dispatch(authenticateSuccess(userInfo))
     } catch (error) {
-      dispatch(loginFail(error))
+      dispatch(authenticateFail(error))
     }
   }
 }
 
-export function logOutSucess(): object {
-  return { type: 'LOG_OUT_SUCESS' }
+export function unauthenticated(): object {
+  return { type: 'UNAUTHENTICATED' }
 }
 
 export function observeCurrentUserStart(): (dispatch: func) => Promise<void> {
   return async (dispatch): void => {
-    dispatch({ type: 'OBSERVE_CURRENT_USER_START' })
+    dispatch({ type: 'OBSERVE_AUTHENTICATION_START' })
 
     listenAuth(
-      (userInfo) => { dispatch(loginSuccess(userInfo)) },
-      () => { dispatch(logOutSucess()) }
+      (userInfo) => { dispatch(authenticateSuccess(userInfo)) },
+      () => { dispatch(unauthenticated()) }
     )
   }
 }

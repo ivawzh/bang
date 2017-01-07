@@ -1,17 +1,17 @@
 import { connect } from 'react-redux'
-import { loginStart, observeCurrentUserStart } from '../../actions/current-user'
+import { authenticateStart, observeCurrentUserStart } from '../../actions/current-user'
 import { createGameStart } from '../../actions/game'
 import App from './index'
 
 function mapStateToProps(storeStates, ownProps) {
   return {
-    currentUser: storeStates.models.currentUser.auth
+    currentUser: storeStates.models.currentUser.authentication
   }
 }
 
 function mapDispatchToProps(dispatch) {
   return {
-    dispatchLoginStart: () => { dispatch(loginStart()) },
+    dispatchAuthenticateStart: () => { dispatch(authenticateStart()) },
     dispatchObserveCurrentUserStart: () => { dispatch(observeCurrentUserStart()) },
     dispatchCreateGameStart: (authData: object, gameName: ?string) => { dispatch(createGameStart(authData, gameName)) }
   }

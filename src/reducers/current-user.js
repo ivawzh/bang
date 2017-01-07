@@ -1,9 +1,9 @@
 import merge from 'deepmerge'
 
 const initialState = {
-  auth: {
+  authentication: {
     status: {
-      isLoaded: false,
+      isAuthenticated: false,
       isLoading: false,
       isObserved: false,
       error: null
@@ -17,28 +17,28 @@ const initialState = {
 }
 
 const actionHandlers = {
-  OBSERVE_CURRENT_USER_START: (state) => {
+  OBSERVE_AUTHENTICATION_START: (state) => {
     return merge(
       state,
-      { auth: { status: { isObserved: true } } }
+      { authentication: { status: { isObserved: true } } }
     )
   },
-  LOGIN_START: (state) => {
+  AUTHENTICATE_START: (state) => {
     return merge(
       state,
       {
-        auth: {
+        authentication: {
           status: { isLoading: true }
         }
       }
     )
   },
-  LOGIN_SUCCESS: (state, action) => {
+  AUTHENTICATE_SUCCESS: (state, action) => {
     return merge(
       state,
       {
-        auth: {
-          status: { isLoaded: true, isLoading: false, error: null },
+        authentication: {
+          status: { isAuthenticated: true, isLoading: false, error: null },
           data: {
             name: action.userInfo.displayName,
             email: action.userInfo.email,
@@ -48,18 +48,18 @@ const actionHandlers = {
       }
     )
   },
-  LOGIN_FAILURE: (state, action) => {
+  AUTHENTICATE_FAILURE: (state, action) => {
     return merge(
       state,
       {
-        auth: {
-          status: { isLoaded: false, isLoading: false, error: action.error },
-          data: initialState.auth.data
+        authentication: {
+          status: { isAuthenticated: false, isLoading: false, error: action.error },
+          data: initialState.authentication.data
         }
       }
     )
   },
-  LOG_OUT_SUCESS: (state) => {
+  UNAUTHENTICATED: (state) => {
     return initialState
   },
   default: state => state

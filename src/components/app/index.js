@@ -7,7 +7,7 @@ class App extends Component {
   static propTypes = {
     currentUser: PropTypes.shape({
       status: PropTypes.shape({
-        isLoaded: PropTypes.bool,
+        isAuthenticated: PropTypes.bool,
         isObserved: PropTypes.bool,
         error: PropTypes.shape({
           message: PropTypes.string
@@ -19,7 +19,7 @@ class App extends Component {
         uid: PropTypes.string
       })
     }),
-    dispatchLoginStart: PropTypes.func,
+    dispatchAuthenticateStart: PropTypes.func,
     dispatchObserveCurrentUserStart: PropTypes.func,
     dispatchCreateGameStart: PropTypes.func
   }
@@ -57,12 +57,12 @@ class App extends Component {
 
   handleGoogleLogin = () => {
     if (this.props.currentUser.status.isLoading === false) {
-      this.props.dispatchLoginStart()
+      this.props.dispatchAuthenticateStart()
     }
   }
 
   handleCreateGame = () => {
-    if (this.props.currentUser.status.isLoaded) {
+    if (this.props.currentUser.status.isAuthenticated) {
       this.props.dispatchCreateGameStart(this.props.currentUser.data)
     }
   }
@@ -85,7 +85,7 @@ class App extends Component {
           To get started, edit <code>src/components/app/index.js</code> and save to reload.
         </p>
         <div>
-          { (currentUser.status.isLoaded) ? <h3> You are logged in as {currentUser.data.name}</h3> : <h3> You are not logged in yet.</h3> }
+          { (currentUser.status.isAuthenticated) ? <h3> You are logged in as {currentUser.data.name}</h3> : <h3> You are not logged in yet.</h3> }
           { (currentUser.status.error !== null) ? <p> Too bad. Failed to login due to error: {currentUser.status.error.message} </p> : null}
           <button onClick={this.handleGoogleLogin}>Google Login</button>
         </div>
