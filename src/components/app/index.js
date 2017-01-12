@@ -68,7 +68,7 @@ class App extends Component {
 
   handleCreateGame = () => {
     if (this.props.currentUser.authentication.status.isAuthenticated) {
-      this.props.dispatchCreateGameStart(this.props.currentUser.authentication.data)
+      this.props.dispatchCreateGameStart()
     }
   }
 

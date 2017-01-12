@@ -14,7 +14,7 @@ function mapDispatchToProps(dispatch) {
     dispatchGoogleLoginStart: (isObservingAuth) => { dispatch(loginStart(isObservingAuth)) },
     dispatchLogoutStart: (currentUserId) => { dispatch(logoutStart(currentUserId)) },
     dispatchObserveAuthenticationStart: () => { dispatch(observeAuthenticationStart()) },
-    dispatchCreateGameStart: (authData: object, gameName: ?string) => { dispatch(createGameStart(authData, gameName)) }
+    dispatchCreateGameStart: (gameName: ?string) => { dispatch(createGameStart(gameName)) }
   }
 }
 

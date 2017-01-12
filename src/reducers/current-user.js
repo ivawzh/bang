@@ -16,7 +16,10 @@ const initialState = {
     }
   },
   user: {
-    data: {},
+    data: {
+      id: null,
+      name: null
+    },
     status: {
       beingObserved: false,
       startingObserve: false,

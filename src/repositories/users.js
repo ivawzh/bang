@@ -9,17 +9,25 @@ export async function observeUser(userId, onChange: (latestUserSnapshot) => void
 }
 
 export async function createUser(authenticationUid, userPayload): Promise<string> {
+  const clientTimestamp = humanTimestamp()
   const newUserId: string = timeUuid()
   const newUser: object = {
     ...userPayload,
     createdAt: serverTimestamp,
     updatedAt: serverTimestamp,
-    clientCreatedAt: humanTimestamp(),
-    clientUpdatedAt: humanTimestamp(),
+    clientCreatedAt: clientTimestamp,
+    clientUpdatedAt: clientTimestamp,
     id: newUserId
   }
+  const authenticationProfile = {
+    userId: newUserId,
+    createdAt: serverTimestamp,
+    updatedAt: serverTimestamp,
+    clientCreatedAt: clientTimestamp,
+    clientUpdatedAt: clientTimestamp,
+  }
   const bulkUpdate = {
-    [`${authenticationProfilesPath}/${authenticationUid}/userId`]: newUserId,
+    [`${authenticationProfilesPath}/${authenticationUid}`]: authenticationProfile,
     [`${usersPath}/${newUserId}`]: newUser
   }
   await db.update(bulkUpdate)

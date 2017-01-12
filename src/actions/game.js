@@ -1,20 +1,14 @@
-import db, { serverTimestamp } from '../stores/firebase'
-import { timeUuid, humanTimestamp } from '../utils'
+import { createGame } from '../repositories/games'
 
-export function createGameStart(authData: { uid: string, name: stirng }, gameName: ?string = 'NEW GAME' ): (dispatch: func) => Promise<void> {
-  return async (dispatch) => {
+export function createGameStart(gameName: ?string): (dispatch: func) => Promise<void> {
+  return async (dispatch, getState) => {
     dispatch({ type: 'CREATE_GAME_START' })
     try {
-      const newGame = { creator: authData.uid, name: gameName, createdAt: serverTimestamp, dispatchedAt: humanTimestamp(), isFinished: false, isStarted: false }
-      const newGameId = timeUuid()
-      const initialGameState = { players: { [authData.uid]: authData.name }, createdAt: serverTimestamp, dispatchedAt: humanTimestamp() }
-      const initialGameStateId = timeUuid()
-      const bulkUpdate = {
-        [`gameProfiles/${newGameId}`]: newGame,
-        [`games/${newGameId}/states/${initialGameStateId}`]: initialGameState,
-        // [`players/${authData.uid}/playingGame`]: newGameId
-      }
-      await db.update(bulkUpdate)
+      const states = getState().models.currentUser
+      if (states.status.isLoggedIn === false) throw(new Error('User is not yet logged in'))
+      const currentUser = states.user.data
+      const gameParams = { name: gameName }
+      const newGameId = await createGame(gameParams, currentUser)
       dispatch(createGameSuccess(newGameId))
     } catch (error) {
       dispatch(createGameFailure(error))
@@ -27,5 +21,5 @@ function createGameSuccess(newGameId: string): {type: string, newGameId: string 
 }
 
 function createGameFailure(error: object): { type:string, error: object } {
-  return { type: 'CREATE_GAME_FAILURE', error }
+  return { type: 'CREATE_GAME_FAILURE', error: { message: error.message, code: error.code, stack: error.stack, name: error.name } }
 }
